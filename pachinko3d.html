@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>パチンコシミュレーター</title>
+  <meta name="viewport" conntent-"width=device-width>
+  <link rel="stylesheet" href="pachinko.css">
+  <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+  <script type="text/javascript" id="MathJax-script" async
+    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
+</head>
+
+<body>
+
+  <script src="https://unpkg.com/three/build/three.min.js"></script>
+  <script src="https://unpkg.com/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+  <div id="textInfo"
+    style="position: absolute; z-index: 100; display:block; text-align: center; font-size: 60px; color: #ff0000">
+  </div>
+  <div id="pointText"
+    style="position: absolute; z-index: 100; display:block; text-align: center; font-size: 60px; color: #ff0000">
+  </div>
+
+  <div class="container">
+
+    <header style="padding-bottom:30px">
+      <h3 class="heading">パチンコシミュレーター</h3>
+      <h5 id="name">4620071：徳田勇真</h5>
+    </header>
+
+    <canvas id="myCanvas" width="400" height="500" data-title="パチンコシミュレーター" data-intro="ボールをドラッグして引っ張り、ゴールに入れましょう。"
+      data-step="1" style="float:left;padding-right:60px">
+    </canvas>
+    <section class="information" style="50px">
+      <div id="info" data-title="制限時間" data-intro="制限時間は30秒です。" data-step="2">Time: 30.00 s
+      </div>
+      <div id="pointInfo" data-title="得点" data-intro="大きいゴールに入れると100ポイント、小さいゴールに入れると500ポイントが加算されます。" data-step="3"
+        style="clear:right">0
+        Points</div>
+    </section>
+    <section data-title="パラメーターの変更" data-intro="障害物の数、ボールの質量、ゴールの速さを設定できます。">
+      <br>
+      <h6>障害物の数</h6>
+      <label><input type="radio" id="oneObj" name="objNum"  onclick="init()"><span>1つ</span></label>
+      <label><input type="radio" id="twoObj" name="objNum" onclick="init()"><span>2つ</span></label>
+      <label><input type="radio" id="threeObj" name="objNum" checked="checked" onclick="init()"><span>3つ</span></label>
+      <br><br>
+      <h6>ボールの質量</h6>
+      <label><input type="radio" id="5G" name="ballM" onclick="init()"><span>5g</span></label>
+      <label><input type="radio" id="10G" name="ballM" checked="checked"onclick="init()"><span>10g</span></label>
+      <label><input type="radio" id="15G" name="ballM" onclick="init()"><span>15g</span></label>
+      <br><br>
+      <h6>ゴールの速さ</h6>
+      <label><input type="radio" id="normalSpeed" name="goalSpeed"checked="checked" onclick="init()"><span>普通</span></label>
+      <label><input type="radio" id="1.5Speed" name="goalSpeed" onclick="init()"><span>1.5倍速</span></label>
+      <label><input type="radio" id="doubleSpeed" name="goalSpeed" onclick="init()"><span>倍速</span></label>
+    </section>
+    <br>
+    <table class="highlight" style="max-width: 400px; table-layout: fixed; clear:right" data-title="数値確認"
+      data-intro="動作中に自然長からの縮みと速さを確認することができます。">
+      <thead>
+        <tr>
+          <th scope="col">自然長からの縮み y</th>
+          <th scope="col">速さ v</td>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td id="text-x">0.0 [mm]</td>
+          <td id="text-v">0.0 [mm/s]</td>
+        </tr>
+      </tbody>
+    </table>
+    <br>
+
+    <section class="button" style="clear:both">
+      <br>
+      <a id="btnGame" class="waves-effect waves-light btn tooltipped" onclick="startGame()" data-tooltip="本番開始"
+        data-title="ボタンの説明" data-intro="ゲームが開始され、制限時間が減り始めます。">ゲーム開始</a>
+      <a id="btnNext" class="waves-effect waves-light btn blue tooltipped" onclick="nextBall()" data-position="top"
+        data-tooltip="次のボールを出す" data-title="ボタンの説明" data-intro="新しいボールが出てきます。">次のボール</a>
+      <a id="btnReset" class="waves-effect waves-light btn red tooltipped" onclick="init()" data-position="right"
+        data-tooltip="初期状態に戻す" data-title="ボタンの説明" data-intro="初期状態にリセットされます。">リセット</a>
+      <a class="waves-effect waves-light btn orange tooltipped" onclick="introJs().start();"
+        data-tooltip="チュートリアルを見る">チュートリアル</a>
+    </section>
+
+    <br>
+    <section class="mathEquation" data-title="数式" data-intro="ここでは、使われている数式を見ることができます。">
+      <h5>数式</h5>
+      <section style="float:left;min-width:350px;padding-left:30px">
+        <h6>ばねで発射した瞬間の加速度</h6>
+        \[
+        \frac{d^2y}{dt^2} = \frac{dv}{dt} = -\frac{k}{M+m}(y - l) - g
+        \]<br>
+        <h6>円運動中の加速度</h6>
+        \[
+        \frac{d^2\theta}{dt^2} = \frac{d\omega}{dt} = \frac{g}{R}cos\theta
+        \]<br>
+        <h6>衝突する際に成り立つ式</h6>
+        \[
+        e=-\frac{v'_1-v'_2}{v_1-v_2}
+        \]
+      </section>
+      <section>
+        <h6>パラメータ</h6>
+        \(y\) : 位置 ([mm])<br>
+        \(v\) : 速度 ([mm/s])<br>
+        \(l\) : 自然長 (150[mm])<br>
+        \(\theta\) : 偏角 ([rad])<br>
+      \(\omega\) : 角速度 ([rad/s])<br>
+      \(t\) : 時間 ([s])<br>
+      \(k\) : ばね定数 (17.02[N/mm])<br>
+      \(M\) : ばねの板の質量 (0.005[kg])<br>
+      \(m\) : ボールの質量 ([kg])<br>
+      \(g\) : 重力加速度 (-1702[mm/s\(^2\)])(板が10度だけ傾いている)<br>
+      \(R\) : 円運動中の弧の半径 (120[mm])<br>
+      \(e\) : 反発係数 (0.8)<br>
+      \(v'\) : 衝突後の速度 ([mm/s])
+      </section>
+      <section style="clear:both">
+        <h6>ルンゲクッタ法による式</h6>
+        \begin{align}
+        k_1 &= hf(x_i, y_i) \\
+        k_2 &= hf(x_i + \frac{h}{2}, y_i + \frac{k_2}{2}) \\
+        k_3 &= hf(x_i + \frac{h}{2}, y_i + \frac{k_3}{2}) \\
+        k_4 &= hf(x_i + h, y_i + k_3) \\
+        \end{align}
+        \[
+        y_{i+1} = y_i + \frac{1}{6}(k_1 + 2k_2 + 2k_3 + k_4)
+        \]
+      </section>
+    </section>
+  </div>
+  <script src="pachinko3d.js"></script>
+</body>
+
+</html>

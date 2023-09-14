@@ -1,0 +1,30 @@
+.heading {
+  border-bottom: solid 1px #349FA6;
+  text-align: center;
+}
+
+#name {
+  text-align: center;
+}
+
+#myCanvas,
+label {
+  padding-left: 10px;
+}
+
+
+th,
+td {
+  text-align: left !important;
+}
+
+.button {
+  text-align: center;
+  margin-top: 30px;
+  border-bottom: solid 1px #cccccc;
+  padding-bottom: 30px;
+}
+
+.mathEquation {
+  padding-left: 100px;
+}
