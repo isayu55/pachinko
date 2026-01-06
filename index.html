@@ -8,16 +8,10 @@
   <link rel="stylesheet" href="pachinko.css">
   <link rel="stylesheet" href="https://unpkg.com/intro.js/minified/introjs.min.css">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
-  <script type="text/javascript" id="MathJax-script" async
-    src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-chtml.js"></script>
 </head>
 
 <body>
 
-  <script src="https://unpkg.com/three/build/three.min.js"></script>
-  <script src="https://unpkg.com/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
-  <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
   <div id="textInfo"
     style="position: absolute; z-index: 100; display:block; text-align: center; font-size: 60px; color: #ff0000">
   </div>
@@ -136,6 +130,19 @@
       </section>
     </section>
   </div>
+  <script src="https://unpkg.com/three@0.147.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/three@0.147.0/examples/js/controls/OrbitControls.js"></script>
+  <script src="https://unpkg.com/intro.js/minified/intro.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+  <script>
+    // 画面の初期化をHTMLの読み込み完了後に実行させるための記述
+    window.addEventListener('load', function() {
+      if (typeof init === 'function') {
+        init();
+      }
+    });
+  </script>
   <script src="pachinko3d.js"></script>
 </body>
 

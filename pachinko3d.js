@@ -94,9 +94,9 @@ const X0 = LEFTEDGE + BALL_R * 2 + PARTITION + GAP;
 
 const rect = canvas.getBoundingClientRect();
 const textInfo = document.getElementById('textInfo');
+const pointText = document.getElementById('pointText'); 
 textInfo.style.top = rect.top + canvas.height / 2 - 60 + 'px';
 textInfo.style.left = rect.left + canvas.width / 2 - 10 + 'px';
-const pointText = document.getElementById('pointText');
 pointText.style.top = rect.top + canvas.height / 2 - 160 + 'px';
 
 
@@ -531,7 +531,12 @@ const init = () => {
 
   draw(); // 描画実行
 }
-
+const updateTextPos = () => {
+    rect = canvas.getBoundingClientRect();
+    textInfo.style.top = rect.top + canvas.height / 2 - 60 + 'px';
+    textInfo.style.left = rect.left + canvas.width / 2 - 10 + 'px';
+    pointText.style.top = rect.top + canvas.height / 2 - 160 + 'px';
+};
 // キャンバスの描画
 const draw = () => {
   // 設定したカメラ位置からシーンの描画（レンダリング）
